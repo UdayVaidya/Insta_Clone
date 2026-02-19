@@ -1,0 +1,21 @@
+Authentication 
+register done
+login done
+logout => token blacklisting    later
+[otp based regsitration]    later
+
+
+post 
+    create post.      
+    can see the post
+    like post (collection type)
+    save post
+
+users
+    following
+    followers
+    
+
+    
+
+    
