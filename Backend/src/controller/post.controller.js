@@ -3,6 +3,7 @@ import ImageKit from "@imagekit/nodejs";
 import { toFile } from "@imagekit/nodejs";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import likeModel from "../models/like.model.js";
 
 dotenv.config();
 
@@ -13,7 +14,6 @@ const imagekit = new ImageKit({
 });
 
 const createPostController = async (req, res) => {
-    console.log(req.body, req.file)
 
     const token = req.cookies.token
     if (!token) {
@@ -54,20 +54,65 @@ const getPostsController = async (req, res) => {
     const userId = req.user.id;
     const posts = await postModel.find({ user: userId });
     return res.status(200).json({ message: "Posts fetched successfully", posts })
-}
+};
 
 const getPostDetailsController = async (req, res) => {
     const userId = req.user.id;
     const postId = req.params.postId;
     const post = await postModel.findById(postId);
-    if(!post){
-        return res.status(404).json({message: "Post not found"});
+    if (!post) {
+        return res.status(404).json({ message: "Post not found" });
     }
 
-    if(post.user.toString() !== userId){
-        return res.status(401).json({message: "Forbidden content"});
+    if (post.user.toString() !== userId) {
+        return res.status(401).json({ message: "Forbidden content" });
     }
     return res.status(200).json({ message: "Post fetched successfully", post })
-}
+};
 
-export { createPostController, getPostsController, getPostDetailsController };
+const likePostController = async (req, res) => {
+    const username = req.user.username;
+    const postId = req.params.postId;
+    const post = await postModel.findById(postId);
+    if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+    }
+
+    const existingLike = await likeModel.findOne({ post: postId, user: username });
+
+    if (existingLike) {
+        return res.status(409).json({ message: "Post already liked" });
+    }
+
+    const like = await likeModel.create({
+        post: postId,
+        user: username
+    });
+    return res.status(201).json({ message: "Post liked successfully", like })
+};
+
+
+const getFeedController = async (req, res) => {
+
+    const user = req.user;
+    const posts = await Promise.all((await postModel.find().populate("user").lean())
+        .map(async (post) => {
+
+            /**
+            * typeof post => object
+            */
+
+            const isLiked = await likeModel.findOne({
+                user: user.username,
+                post: post._id
+            });
+
+            post.isLiked = Boolean(isLiked);
+            return post;
+        }))
+
+    return res.status(200).json({ message: "Posts fetched successfully", posts })
+};
+
+
+export { createPostController, getPostsController, getPostDetailsController, likePostController, getFeedController };

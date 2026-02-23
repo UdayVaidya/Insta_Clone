@@ -1,9 +1,12 @@
 import './App.css'
-import AuthRoutes from './AuthRoutes'
+import AuthRoutes from './auth.routes.jsx'
+import { AuthProvider } from './Features/auth/auth.context.jsx'
 
 function App() {
   return (
-    <AuthRoutes />
+    <AuthProvider>
+      <AuthRoutes />
+    </AuthProvider>
   )
 }
 

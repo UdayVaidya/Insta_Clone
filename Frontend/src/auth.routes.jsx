@@ -15,6 +15,8 @@ const AuthRoutes = () => {
 
                 {/* Catch-all → redirect to login */}
                 <Route path="*" element={<Navigate to="/login" replace />} />
+
+                <Route path="/dashboard" element={<h1>Dashboard</h1>} />
             </Routes>
         </BrowserRouter>
     );

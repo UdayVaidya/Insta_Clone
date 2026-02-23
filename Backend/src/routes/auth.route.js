@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "../controller/auth.controller.js";
-
+import { registerUserController, loginUserController, getMeController } from "../controller/auth.controller.js";
+import identifyUser from "../middlewares/auth.middleware.js";
 
 const authRouter = Router();
 
@@ -9,14 +9,21 @@ const authRouter = Router();
  * @route POST /api/auth/register
  * @access Public
  */
-authRouter.post("/register", registerUser);
+authRouter.post("/register", registerUserController);
 
 /**
  * @desc Login a user
  * @route POST /api/auth/login
  * @access Public
  */
-authRouter.post("/login", loginUser);
+authRouter.post("/login", loginUserController);
+
+/**
+ * @desc Get current logged in user
+ * @route POST /api/auth/get-me
+ * @access Private
+ */
+authRouter.post("/get-me", identifyUser, getMeController);
 
 
 export default authRouter;

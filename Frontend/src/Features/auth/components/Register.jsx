@@ -1,13 +1,27 @@
 import { useState } from "react"
+import { register } from "../services/auth.api"
 
 const Register = ({ onSwitch }) => {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false);
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const res = await register(username, email, password);
+            console.log(res.data);
+        } catch (error) {
+            console.error("Registration failed:", error);
+        }
+        setLoading(false);
+    }
 
     return (
-        <form className="flex flex-col gap-4 w-72" onSubmit={(e) => e.preventDefault()}>
-
+        <form className="flex flex-col gap-4 w-72" onSubmit={handleRegister}>
+            {loading && <p>Loading...</p>}
             {/* Title */}
             <div className="mb-2">
                 <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>

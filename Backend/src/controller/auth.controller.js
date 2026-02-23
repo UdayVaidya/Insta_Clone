@@ -3,19 +3,19 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 
-const registerUser = async (req, res) => {
+const registerUserController = async (req, res) => {
     try {
         const { username, email, password, bio, profilePicture } = req.body;
 
         const isUserAlreadyExist = await User.findOne({
             $or: [
-                { email },
-                { username }
+                { email: email },
+                { username: username }
             ]
         });
 
         if (isUserAlreadyExist) {
-            return res.status(409).json({ success: false, message: "User already exists by this email or username"(isUserAlreadyExist.email === email ? "Email already exists" : "Username already exists") });
+            return res.status(409).json({ success: false, message: isUserAlreadyExist.email === email ? "Email already exists" : "Username already exists" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -56,11 +56,16 @@ const registerUser = async (req, res) => {
 
 }
 
-const loginUser = async (req, res) => {
+const loginUserController = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body;
 
-        const user = await User.findOne({ email });
+
+        const isEmail = identifier.includes("@");
+
+        const user = await User.findOne(
+            isEmail ? { email: identifier } : { username: identifier }
+        ).select("+password");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
@@ -99,4 +104,21 @@ const loginUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser };
+const getMeController = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.user.id);
+        res.status(200).json({
+            success: true, message: "User fetched successfully", user: {
+                email: user.email,
+                username: user.username,
+                profilePicture: user.profilePicture,
+                bio: user.bio
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+export { registerUserController, loginUserController, getMeController };
