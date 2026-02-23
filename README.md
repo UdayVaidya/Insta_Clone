@@ -36,15 +36,28 @@ Project/
 │       ├── config/          # DB connection
 │       ├── controller/      # Route controllers (auth, post, user)
 │       ├── middlewares/     # Auth middleware
-│       ├── models/          # Mongoose models (User, Post, Follow)
+│       ├── models/          # Mongoose models (User, Post, Like)
 │       └── routes/          # API routes (auth, post, user)
 └── Frontend/
     ├── index.html
     └── src/
-        ├── App.jsx
-        ├── AuthRoutes.jsx   # Protected route wrapper
-        └── Features/
-            └── auth/        # Login & Register pages + components
+        ├── App.jsx          # Root component
+        ├── main.jsx         # React mounting point
+        ├── auth.routes.jsx  # Main routing configuration
+        ├── index.css        # Styling and Tailwind imports
+        └── Features/        # Feature-based folder structure
+            ├── auth/        # Authentication module
+            │   ├── components/
+            │   ├── hooks/       # e.g., useAuth.js
+            │   ├── pages/       # AuthPage.jsx, Login.jsx, Register.jsx
+            │   ├── services/    # auth.api.js
+            │   └── auth.context.jsx
+            └── Post/        # Posts and Feed module
+                ├── components/  # Post.jsx
+                ├── hooks/       # e.g., usePost.js
+                ├── pages/       # Feed.jsx
+                ├── services/    # post.api.js
+                └── post.context.jsx
 ```
 
 ---
