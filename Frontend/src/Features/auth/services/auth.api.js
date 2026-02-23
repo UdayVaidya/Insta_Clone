@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: `${import.meta.env.VITE_API_URL}/api/auth`,
     withCredentials: true
 })
 
 export const register = async(username, email, password) => {
     try {
-        const response = await api.post("/auth/register", {
+        const response = await api.post("/register", {
             username,
             email,
             password
@@ -20,7 +20,7 @@ export const register = async(username, email, password) => {
 
 export const login = async(identifier, password) => {
     try {
-        const response = await api.post("/auth/login", {
+        const response = await api.post("/login", {
             identifier,
             password
         });
@@ -32,7 +32,7 @@ export const login = async(identifier, password) => {
 
 export const getMe = async() =>{
     try {
-        const response = await api.post("/auth/get-me");
+        const response = await api.post("/get-me");
         return response.data;
     } catch (error) {
         throw error;

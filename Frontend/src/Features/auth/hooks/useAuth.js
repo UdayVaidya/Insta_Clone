@@ -30,15 +30,10 @@ export const useAuth = () => {
 
     }
 
-    const handleGetMe = async () => {
-        setLoading(true)
-        const response = await getMe()
-        setUser(response.user)
-        setLoading(false)
-    }
+
 
     return {
-        user, loading, handleLogin, handleRegister, handleGetMe
+        user, loading, handleLogin, handleRegister
     }
 
 }

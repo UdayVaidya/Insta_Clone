@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
-import Login from '../components/Login'
-import Register from '../components/Register'
+import Login from './Login'
+import Register from './Register'
 
 const AuthPage = ({ defaultView = 'login' }) => {
   const [isRegister, setIsRegister] = useState(defaultView === 'register')

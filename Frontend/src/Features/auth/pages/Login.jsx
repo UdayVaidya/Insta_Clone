@@ -13,7 +13,7 @@ const Login = ({ onSwitch }) => {
 
         await handleLogin(identifier, password)
 
-        navigate('/dashboard')
+        navigate('/feed');
 
     }
 
