@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { PostContext } from "../post.context.jsx";
-import { getFeed } from "../services/post.api";
+import { getFeed, likePost, unlikePost } from "../services/post.api";
 
 export const usePost = () => {
     const context = useContext(PostContext);
@@ -18,5 +18,30 @@ export const usePost = () => {
         setLoading(false);
     };
 
-    return { loading, feed, post, handleGetFeed };
+    const handleLikePost = async (postId) => {
+        // Optimistic update: flip isLiked in feed state immediately
+        setFeed(prev => prev.map(p => p._id === postId ? { ...p, isLiked: true } : p));
+        try {
+            await likePost(postId);
+        } catch (error) {
+            // Revert on failure
+            setFeed(prev => prev.map(p => p._id === postId ? { ...p, isLiked: false } : p));
+            console.error("Like failed:", error.response?.data || error.message);
+        }
+    };
+
+    const handleUnlikePost = async (postId) => {
+        // Optimistic update: flip isLiked in feed state immediately
+        setFeed(prev => prev.map(p => p._id === postId ? { ...p, isLiked: false } : p));
+        try {
+            await unlikePost(postId);
+        } catch (error) {
+            // Revert on failure
+            setFeed(prev => prev.map(p => p._id === postId ? { ...p, isLiked: true } : p));
+            console.error("Unlike failed:", error.response?.data || error.message);
+        }
+    };
+
+
+    return { loading, feed, post, handleGetFeed, handleLikePost, handleUnlikePost, };
 };

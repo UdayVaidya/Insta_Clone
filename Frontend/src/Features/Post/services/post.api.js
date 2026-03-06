@@ -14,3 +14,21 @@ export const getFeed = async () => {
         throw error;
     }
 }
+
+export const likePost = async (postId) => {
+    try {
+        const response = await api.post(`/${postId}/like`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const unlikePost = async (postId) => {
+    try {
+        const response = await api.post(`/${postId}/unlike`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -60,6 +60,7 @@ const loginUserController = async (req, res) => {
     try {
         const { identifier, password } = req.body;
 
+        console.log("🔐 Login attempt → identifier:", identifier, "| password present:", !!password);
 
         const isEmail = identifier.includes("@");
 

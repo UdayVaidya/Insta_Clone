@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createPostController, getPostsController, getPostDetailsController, likePostController, getFeedController } from "../controller/post.controller.js";
+import { createPostController, getPostsController, getPostDetailsController, likePostController, getFeedController,unlikePostController } from "../controller/post.controller.js";
 import multer from "multer";
 import identifyUser from "../middlewares/auth.middleware.js";
 
@@ -45,5 +45,13 @@ postRouter.get("/:postId", identifyUser, getPostDetailsController);
  * @description Like post
  */
 postRouter.post("/:postId/like", identifyUser, likePostController);
+
+/**
+ * @desc Unlike post
+ * @route POST /api/posts/:postId/unlike [protected]
+ * @access Private
+ * @description Unlike post
+ */
+postRouter.post("/:postId/unlike", identifyUser, unlikePostController);
 
 export default postRouter;

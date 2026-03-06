@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "./Features/auth/pages/AuthPage";
-import Feed from "./Features/Post/pages/Feed";
+import MainPage from "./Features/Post/pages/MainPage";
 
 
 const AuthRoutes = () => {
@@ -14,7 +14,7 @@ const AuthRoutes = () => {
                 <Route path="/login" element={<AuthPage defaultView="login" />} />
                 <Route path="/register" element={<AuthPage defaultView="register" />} />
 
-                <Route path="/feed" element={<Feed />} />
+                <Route path="/feed" element={<MainPage />} />
 
                 {/* Catch-all → redirect to login */}
                 <Route path="*" element={<Navigate to="/login" replace />} />
