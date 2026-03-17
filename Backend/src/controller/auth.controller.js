@@ -7,6 +7,10 @@ const registerUserController = async (req, res) => {
     try {
         const { username, email, password, bio, profilePicture } = req.body;
 
+        if (!username || !email || !password) {
+            return res.status(400).json({ success: false, message: "Username, email, and password are required" });
+        }
+
         const isUserAlreadyExist = await User.findOne({
             $or: [
                 { email: email },
@@ -15,7 +19,10 @@ const registerUserController = async (req, res) => {
         });
 
         if (isUserAlreadyExist) {
-            return res.status(409).json({ success: false, message: isUserAlreadyExist.email === email ? "Email already exists" : "Username already exists" });
+            return res.status(409).json({
+                success: false,
+                message: isUserAlreadyExist.email === email ? "Email already exists" : "Username already exists"
+            });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -43,7 +50,10 @@ const registerUserController = async (req, res) => {
         });
 
         res.status(201).json({
-            success: true, message: "User registered successfully", user: {
+            success: true,
+            message: "User registered successfully",
+            user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
                 profilePicture: user.profilePicture,
@@ -53,14 +63,15 @@ const registerUserController = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-
-}
+};
 
 const loginUserController = async (req, res) => {
     try {
         const { identifier, password } = req.body;
 
-        console.log("🔐 Login attempt → identifier:", identifier, "| password present:", !!password);
+        if (!identifier || !password) {
+            return res.status(400).json({ success: false, message: "Identifier and password are required" });
+        }
 
         const isEmail = identifier.includes("@");
 
@@ -92,7 +103,10 @@ const loginUserController = async (req, res) => {
         });
 
         res.status(200).json({
-            success: true, message: "User logged in successfully", user: {
+            success: true,
+            message: "User logged in successfully",
+            user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
                 profilePicture: user.profilePicture,
@@ -103,14 +117,19 @@ const loginUserController = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
 const getMeController = async (req, res) => {
     try {
-
         const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
         res.status(200).json({
-            success: true, message: "User fetched successfully", user: {
+            success: true,
+            message: "User fetched successfully",
+            user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
                 profilePicture: user.profilePicture,
@@ -120,6 +139,19 @@ const getMeController = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
-export { registerUserController, loginUserController, getMeController };
+const logoutController = async (req, res) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict"
+        });
+        res.status(200).json({ success: true, message: "Logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export { registerUserController, loginUserController, getMeController, logoutController };

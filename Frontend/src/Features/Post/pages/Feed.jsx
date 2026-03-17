@@ -1,69 +1,66 @@
 import { useEffect } from "react";
 import { usePost } from "../hooks/usePost";
 import Post from "../components/Post";
-import Navbar from "../../shared/Navbar";
 
 const Feed = () => {
-    const { feed, loading, handleGetFeed, handleLikePost, handleUnlikePost } = usePost();
+    const { feed, loading, handleGetFeed, handleLikePost, handleUnlikePost, handleSavePost, handleUnsavePost } = usePost();
 
     useEffect(() => {
         handleGetFeed();
     }, []);
 
-    const setLike = (postId) => {
-        handleLikePost(postId);
-    };
-
-    const unlikePost = (postId) => {
-        handleUnlikePost(postId);
-    };
-
-    // Loading skeleton
-    if (loading || !feed) {
+    if (loading) {
         return (
-            <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-                <Navbar />
-                <div className="flex justify-center pt-8">
-                    <div className="w-full max-w-[470px] px-4 flex flex-col gap-5">
-                        {[1, 2].map(i => (
-                            <div key={i} className="skeleton rounded-2xl h-[480px] w-full" />
-                        ))}
+            <div className="w-full flex flex-col gap-5 py-2 px-2">
+                {[1, 2, 3].map(i => (
+                    <div key={i} className="flex flex-col gap-0 rounded-2xl overflow-hidden" style={{ background: "#171717", border: "1px solid rgba(255,255,255,0.07)" }}>
+                        <div className="flex items-center gap-3 p-4">
+                            <div className="skeleton w-9 h-9 rounded-full flex-shrink-0" />
+                            <div className="flex flex-col gap-1.5 flex-1">
+                                <div className="skeleton h-3 w-28 rounded" />
+                                <div className="skeleton h-2.5 w-16 rounded" />
+                            </div>
+                        </div>
+                        <div className="skeleton w-full" style={{ height: "320px" }} />
+                        <div className="p-4 flex flex-col gap-2">
+                            <div className="skeleton h-3 w-24 rounded" />
+                            <div className="skeleton h-3 w-48 rounded" />
+                        </div>
                     </div>
-                </div>
+                ))}
             </div>
         );
     }
 
     if (feed.length === 0) {
         return (
-            <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-                <div className="flex flex-col items-center justify-center flex-1 gap-3">
-                    <svg className="w-16 h-16 text-white/20" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M21 15.61L19.59 17l-2.54-2.56L15 16.5V21h-2v-4.5l-7.5 7.5L4 22.5l18-18-1 1.11zM8 3v4.39l-4-4L2.5 4.91 5 7.39V10H3V3h5zm8 0h4v4h-2V5h-2V3z" />
+            <div className="flex flex-col items-center justify-center py-24 gap-4">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)" }}>
+                    <svg className="w-8 h-8 text-white/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                    <p className="text-white/50 font-medium">No posts yet</p>
-                    <p className="text-white/25 text-sm">Check back soon or follow more people</p>
+                </div>
+                <div className="text-center">
+                    <p className="text-white/60 font-semibold text-base">No posts yet</p>
+                    <p className="text-white/25 text-sm mt-1">Share your first post or follow someone to see their photos here.</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-
-            <main className="flex justify-center flex-1 py-2">
-                <div className="w-full max-w-[470px] px-2 flex flex-col gap-5">
-                    {feed.map((item, i) => (
-                        <Post
-                            key={item._id || i}
-                            user={item.user}
-                            post={item}
-                            LikePost={setLike}
-                            UnlikePost={unlikePost}
-                        />
-                    ))}
-                </div>
-            </main>
+        <div className="w-full flex flex-col gap-5 py-2 px-2">
+            {feed.map((item, i) => (
+                <Post
+                    key={item._id || i}
+                    user={item.user}
+                    post={item}
+                    LikePost={handleLikePost}
+                    UnlikePost={handleUnlikePost}
+                    SavePost={handleSavePost}
+                    UnsavePost={handleUnsavePost}
+                />
+            ))}
         </div>
     );
 };

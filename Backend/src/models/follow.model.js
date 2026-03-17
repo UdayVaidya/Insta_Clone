@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 
 const followSchema = new mongoose.Schema({
     follower: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required:[true, "follower is required"]
+        required: [true, "follower is required"]
     },
     followee: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required:[true, "followee is required"]
+        required: [true, "followee is required"]
     },
-    status:{
+    status: {
         type: String,
         enum: {
             values: ["pending", "accepted", "rejected"],
@@ -20,9 +20,9 @@ const followSchema = new mongoose.Schema({
         default: "pending"
     }
 
-},{timestamps: true});
+}, { timestamps: true });
 
-followSchema.index({follower: 1, followee: 1}, {unique: true});
+followSchema.index({ follower: 1, followee: 1 }, { unique: true });
 
 const followModel = mongoose.model("Follow", followSchema);
 

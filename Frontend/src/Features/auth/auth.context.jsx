@@ -1,16 +1,30 @@
-import { createContext, useState, useEffect, useContext, Children } from "react";
+import { createContext, useState, useEffect } from "react";
+import { getMe } from "./services/auth.api.js";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({children}) => {
-    const [user,setUser] = useState(null);
-    const [loading,setLoading] = useState(false);
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true); // true initially while we check session
 
+    // On mount, try to restore session from cookie
+    useEffect(() => {
+        const restoreSession = async () => {
+            try {
+                const data = await getMe();
+                if (data.success) setUser(data.user);
+            } catch {
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        restoreSession();
+    }, []);
 
-    return(
-        <AuthContext.Provider value={{user,setUser, loading, setLoading}}>
+    return (
+        <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>
             {children}
         </AuthContext.Provider>
-    )
-    
+    );
 };

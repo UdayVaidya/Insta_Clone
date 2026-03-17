@@ -1,57 +1,31 @@
 import { Router } from "express";
-import { createPostController, getPostsController, getPostDetailsController, likePostController, getFeedController,unlikePostController } from "../controller/post.controller.js";
+import {
+    createPostController,
+    getPostsController,
+    getPostDetailsController,
+    likePostController,
+    getFeedController,
+    unlikePostController,
+    savePostController,
+    unsavePostController,
+    getSavedPostsController,
+    getExplorePostsController,
+} from "../controller/post.controller.js";
 import multer from "multer";
 import identifyUser from "../middlewares/auth.middleware.js";
 
 const postRouter = Router();
-const upload = multer({ storage: multer.memoryStorage() })
+const upload = multer({ storage: multer.memoryStorage() });
 
-/**
- * @desc Create post
- * @route POST /api/posts/ [protected]
- * @access Private
- * @description Create post
- */
 postRouter.post("/", upload.single("image"), createPostController);
-
-/**
- * @desc Get all posts
- * @route GET /api/posts/ [protected]
- * @access Private
- * @description Get all posts
- */
-postRouter.get("/", identifyUser, getPostsController);
-
-/**
- * @desc Get feed
- * @route GET /api/posts/feed [protected]
- * @access Private
- * @description Get feed
- */
 postRouter.get("/feed", identifyUser, getFeedController);
-
-/**
- * @desc Get post details
- * @route GET /api/posts/:postId [protected]
- * @access Private
- * @description Get post details
- */
+postRouter.get("/saved", identifyUser, getSavedPostsController);
+postRouter.get("/explore", identifyUser, getExplorePostsController);
+postRouter.get("/", identifyUser, getPostsController);
 postRouter.get("/:postId", identifyUser, getPostDetailsController);
-
-/**
- * @desc Like post
- * @route POST /api/posts/:postId/like [protected]
- * @access Private
- * @description Like post
- */
 postRouter.post("/:postId/like", identifyUser, likePostController);
-
-/**
- * @desc Unlike post
- * @route POST /api/posts/:postId/unlike [protected]
- * @access Private
- * @description Unlike post
- */
 postRouter.post("/:postId/unlike", identifyUser, unlikePostController);
+postRouter.post("/:postId/save", identifyUser, savePostController);
+postRouter.post("/:postId/unsave", identifyUser, unsavePostController);
 
 export default postRouter;
